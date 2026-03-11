@@ -1,0 +1,121 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(15, 20, 25, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.1);
+  padding: 1rem var(--spacing-md);
+  animation: slideInDown 0.5s ease;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-md);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  animation: slideInLeft 0.5s ease 0.1s backwards;
+}
+
+.brand-emoji {
+  font-size: 1.8rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.navbar-brand h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  background: var(--gradient-verde);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.navbar-links {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: center;
+  animation: slideInRight 0.5s ease 0.1s backwards;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  transition: all var(--transition-fast);
+  position: relative;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--verde-accent);
+  transition: width var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--verde-accent);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link-cta {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--gradient-verde);
+  color: var(--bg-primary);
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(74, 222, 128, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.nav-link-cta::after {
+  display: none;
+}
+
+.nav-link-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(74, 222, 128, 0.4);
+  color: var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+  .navbar-links {
+    gap: 1rem;
+  }
+  
+  .nav-link {
+    font-size: 0.85rem;
+  }
+  
+  .nav-link-cta {
+    padding: 0.5rem 1rem;
+  }
+}

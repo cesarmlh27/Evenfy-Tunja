@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  backend:
+    image: ghcr.io/cesarmlh27/evenfy-backend:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+
+  frontend:
+    image: ghcr.io/cesarmlh27/evenfy-frontend:latest
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "5173:80"

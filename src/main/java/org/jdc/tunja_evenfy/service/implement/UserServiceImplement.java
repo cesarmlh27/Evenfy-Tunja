@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jdc.tunja_evenfy.dto.UserCreateDTO;
 import org.jdc.tunja_evenfy.dto.UserDTO;
 import org.jdc.tunja_evenfy.dto.UserProfileDTO;
+import org.jdc.tunja_evenfy.dto.UserProfileUpdateDTO;
 import org.jdc.tunja_evenfy.dto.EventDTO;
 import org.jdc.tunja_evenfy.entity.UserEntity;
 import org.jdc.tunja_evenfy.exception.BadRequestException;
@@ -145,15 +146,12 @@ public class UserServiceImplement implements UserService {
 
     @Override
     @Transactional
-    public UserProfileDTO updateProfile(UUID userId, UserCreateDTO dto) {
+    public UserProfileDTO updateProfile(UUID userId, UserProfileUpdateDTO dto) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found: " + userId));
 
         if (dto.getFullName() != null && !dto.getFullName().trim().isEmpty()) {
             user.setFullName(dto.getFullName().trim());
-        }
-        if (dto.getAvatarUrl() != null) {
-            user.setAvatarUrl(dto.getAvatarUrl().trim());
         }
         if (dto.getBio() != null) {
             user.setBio(dto.getBio().trim());

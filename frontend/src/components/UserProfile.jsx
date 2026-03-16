@@ -23,7 +23,7 @@ export default function UserProfile() {
   const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState('attending')
   const [editing, setEditing] = useState(false)
-  const [editForm, setEditForm] = useState({ fullName: '', avatarUrl: '', bio: '' })
+  const [editForm, setEditForm] = useState({ fullName: '', bio: '' })
   const [saving, setSaving] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [eventLoading, setEventLoading] = useState(false)
@@ -42,7 +42,6 @@ export default function UserProfile() {
       setProfile(response.data)
       setEditForm({
         fullName: response.data.fullName || '',
-        avatarUrl: response.data.avatarUrl || '',
         bio: response.data.bio || '',
       })
     } catch (err) {
@@ -66,7 +65,11 @@ export default function UserProfile() {
   const handleSaveProfile = async () => {
     setSaving(true)
     try {
-      const response = await userService.updateProfile(editForm)
+      const payload = {
+        fullName: editForm.fullName,
+        bio: editForm.bio,
+      }
+      const response = await userService.updateProfile(payload)
       setProfile(response.data)
       setEditing(false)
     } catch (err) {
@@ -143,15 +146,6 @@ export default function UserProfile() {
                   type="text"
                   value={editForm.fullName}
                   onChange={(e) => setEditForm({ ...editForm, fullName: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Avatar URL</label>
-                <input
-                  type="text"
-                  value={editForm.avatarUrl}
-                  onChange={(e) => setEditForm({ ...editForm, avatarUrl: e.target.value })}
-                  placeholder="https://..."
                 />
               </div>
               <div className="form-group">

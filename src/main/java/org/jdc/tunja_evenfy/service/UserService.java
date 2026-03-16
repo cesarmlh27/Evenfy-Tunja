@@ -3,6 +3,7 @@ package org.jdc.tunja_evenfy.service;
 import org.jdc.tunja_evenfy.dto.UserCreateDTO;
 import org.jdc.tunja_evenfy.dto.UserDTO;
 import org.jdc.tunja_evenfy.dto.UserProfileDTO;
+import org.jdc.tunja_evenfy.dto.UserProfileUpdateDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,5 +19,5 @@ public interface UserService {
     UserProfileDTO getUserProfile(UUID userId);
     
     // Actualizar perfil del usuario autenticado
-    UserProfileDTO updateProfile(UUID userId, UserCreateDTO dto);
+    UserProfileDTO updateProfile(UUID userId, UserProfileUpdateDTO dto);
 }

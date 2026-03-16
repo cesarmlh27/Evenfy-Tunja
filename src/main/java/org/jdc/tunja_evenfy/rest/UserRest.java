@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.jdc.tunja_evenfy.dto.UserCreateDTO;
 import org.jdc.tunja_evenfy.dto.UserDTO;
 import org.jdc.tunja_evenfy.dto.UserProfileDTO;
+import org.jdc.tunja_evenfy.dto.UserProfileUpdateDTO;
 import org.jdc.tunja_evenfy.exception.BadRequestException;
 import org.jdc.tunja_evenfy.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class UserRest {
      * Actualizar perfil del usuario autenticado
      */
     @PatchMapping("/profile/me")
-    public UserProfileDTO updateProfile(@Valid @RequestBody UserCreateDTO dto, HttpServletRequest request) {
+    public UserProfileDTO updateProfile(@Valid @RequestBody UserProfileUpdateDTO dto, HttpServletRequest request) {
         UUID userId = (UUID) request.getAttribute("userId");
         return userService.updateProfile(userId, dto);
     }

@@ -98,12 +98,12 @@ public class AuthService {
         }
 
         // Validar que la cuenta esté activa
-        if (!user.getIsActive()) {
+        if (!Boolean.TRUE.equals(user.getIsActive())) {
             throw new BadRequestException("Cuenta desactivada");
         }
 
         // Si 2FA está habilitado, generar código y enviar
-        if (user.getTwoFactorEnabled()) {
+        if (Boolean.TRUE.equals(user.getTwoFactorEnabled())) {
             String code = generateRandomCode();
             
             // Guardar código en BD

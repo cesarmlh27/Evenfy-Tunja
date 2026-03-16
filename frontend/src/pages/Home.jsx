@@ -1,42 +1,82 @@
 import { useState, useEffect } from 'react'
-import { eventService, categoryService } from '../services/api'
+import { eventService } from '../services/api'
+import { useAuth } from '../context/AuthContext'
 import EventModal from '../components/EventModal'
-import tunjaBg from '../image/tunja-fondo.jpg'
+import { SkeletonGrid } from '../components/SkeletonLoader'
+import tunjaBg from '../image/tunja-fondo.webp'
 import '../styles/home.css'
 
-const MOCK_EVENTS = [
-  { id: 1, title: 'Festival de Luces de Tunja', description: 'Una noche mágica con iluminación artística', startDate: '2025-06-15', endDate: '2025-06-16', category: { name: 'Cultura' }, location: { name: 'Plaza de Bolívar' }, image: 'linear-gradient(135deg, #2d5016, #4ade80)', price: 'Gratuito', tickets: 'Entrada libre' },
-  { id: 2, title: 'Concierto en el Parque', description: 'Música en vivo con artistas locales', startDate: '2025-06-22', endDate: '2025-06-22', category: { name: 'Música' }, location: { name: 'Parque Pinzón' }, image: 'linear-gradient(135deg, #1e3a8a, #60a5fa)', price: '25.000 COP', tickets: 'Comprar en Eventbrite' },
-  { id: 3, title: 'Feria Gastronómica', description: 'Sabores tradicionales de Boyacá', startDate: '2025-07-04', endDate: '2025-07-04', category: { name: 'Gastronomía' }, location: { name: 'Centro Histórico' }, image: 'linear-gradient(135deg, #b45309, #fbbf24)', price: 'Gratuito', tickets: 'Acceso libre' },
-  { id: 4, title: 'Exposición de Arte Local', description: 'Obras de artistas tunjanos', startDate: '2025-07-10', endDate: '2025-07-20', category: { name: 'Arte' }, location: { name: 'Museo de Tunja' }, image: 'linear-gradient(135deg, #7f1d1d, #ef4444)', price: '15.000 COP', tickets: 'Boletería en museo' },
-  { id: 5, title: 'Noche de Danza', description: 'Danza folclórica y contemporánea', startDate: '2025-07-18', endDate: '2025-07-18', category: { name: 'Danza' }, location: { name: 'Teatro Municipal' }, image: 'linear-gradient(135deg, #7c3aed, #d946ef)', price: '30.000 COP', tickets: 'Teleticket' },
-  { id: 6, title: 'Mercado de Artesanías', description: 'Productos locales y artesanas de la región', startDate: '2025-07-25', endDate: '2025-07-25', category: { name: 'Comercio' }, location: { name: 'Centro Histórico' }, image: 'linear-gradient(135deg, #0891b2, #06b6d4)', price: 'Gratuito', tickets: 'Compra directa' },
-  { id: 7, title: 'Taller de Cerámica Prehispánica', description: 'Aprende técnicas ancestrales de alfarería', startDate: '2025-08-01', endDate: '2025-08-01', category: { name: 'Cultura' }, location: { name: 'Casa Terracotta' }, image: 'linear-gradient(135deg, #854d0e, #fbbf24)', price: '50.000 COP', tickets: 'Inscripciones cerradas' },
-  { id: 8, title: 'Festival de Comidas Rápidas', description: 'Sabores del mundo en un mismo lugar', startDate: '2025-08-10', endDate: '2025-08-10', category: { name: 'Gastronomía' }, location: { name: 'Parque La Laguna' }, image: 'linear-gradient(135deg, #ea580c, #fbbf24)', price: 'Gratuito', tickets: 'Entrada libre' },
-]
-
-const categoryColors = {
-  'Cultura': { border: 'var(--verde-accent)', label: 'CULTURA' },
-  'Música': { border: 'var(--azul-accent)', label: 'MÚSICA' },
-  'Gastronomía': { border: 'var(--dorado-accent)', label: 'GASTRONOMÍA' },
-  'Arte': { border: 'var(--rojo-accent)', label: 'ARTE' },
-  'Danza': { border: 'var(--neon-purple)', label: 'DANZA' },
-  'Comercio': { border: 'var(--neon-cyan)', label: 'COMERCIO' },
+const CATEGORY_COLOR_MAP = {
+  cultura: '#59a880',
+  musica: '#60a5fa',
+  gastronomia: '#fbbf24',
+  arte: '#ef4444',
+  danza: '#d946ef',
+  comercio: '#06b6d4',
+  deporte: '#8b5cf6',
+  conciertos: '#22d3ee',
+  teatro: '#f97316',
+  fiestas: '#ec4899',
 }
+
+const FALLBACK_COLORS = ['#59a880', '#60a5fa', '#fbbf24', '#ef4444', '#d946ef', '#06b6d4', '#8b5cf6', '#f97316', '#ec4899']
+
+const normalizeCategoryName = (name = '') =>
+  name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+
+const getCategoryColor = (name = '') => {
+  const normalized = normalizeCategoryName(name)
+  if (CATEGORY_COLOR_MAP[normalized]) return CATEGORY_COLOR_MAP[normalized]
+
+  const hash = [...normalized].reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  return FALLBACK_COLORS[hash % FALLBACK_COLORS.length]
+}
+
+const getCategoryStyle = (categoryName = '') => ({
+  border: getCategoryColor(categoryName),
+  label: (categoryName || 'EVENTO').toUpperCase(),
+})
 
 export default function Home() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const { user: currentUser } = useAuth()
+
+  const normalizeImage = (ev) => {
+    const img = ev.image_url || ev.imageUrl || ev.image;
+    if (!img) return 'linear-gradient(135deg, #1e3a8a, #60a5fa)';
+    if (img.startsWith('/uploads/')) return `http://localhost:8080${img}`;
+    return img;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const evRes = await eventService.getAll()
-        setEvents(evRes.data || MOCK_EVENTS)
+        const apiEvents = Array.isArray(evRes.data) ? evRes.data : []
+        const normalized = apiEvents.map(ev => ({
+          ...ev,
+          startDate: ev.event_date || ev.eventDate || ev.startDate,
+          category: typeof ev.category === 'string' ? { name: ev.category } : ev.category,
+          categoryId: ev.category_id || ev.categoryId || '',
+          locationName: typeof ev.location === 'string' ? ev.location : ev.location?.name,
+          image: normalizeImage(ev),
+          is_free: ev.is_free !== false,
+          ticket_purchase_url: ev.ticket_purchase_url || null,
+          info_url: ev.info_url || null,
+          attendee_count: ev.attendee_count || 0,
+          average_rating: ev.average_rating || 0,
+          organizer_name: ev.organizer_name || '',
+        }))
+        setEvents(normalized)
       } catch {
-        setEvents(MOCK_EVENTS)
+        setEvents([])
       } finally {
         setLoading(false)
       }
@@ -53,6 +93,32 @@ export default function Home() {
     setShowModal(false)
     setTimeout(() => setSelectedEvent(null), 300)
   }
+
+  const handleRefresh = async () => {
+    try {
+      const evRes = await eventService.getAll()
+      const apiEvents = Array.isArray(evRes.data) ? evRes.data : []
+      const normalized = apiEvents.map(ev => ({
+        ...ev,
+        startDate: ev.event_date || ev.eventDate || ev.startDate,
+        category: typeof ev.category === 'string' ? { name: ev.category } : ev.category,
+        categoryId: ev.category_id || ev.categoryId || '',
+        locationName: typeof ev.location === 'string' ? ev.location : ev.location?.name,
+        image: normalizeImage(ev),
+        is_free: ev.is_free !== false,
+        ticket_purchase_url: ev.ticket_purchase_url || null,
+        info_url: ev.info_url || null,
+        attendee_count: ev.attendee_count || 0,
+        average_rating: ev.average_rating || 0,
+        organizer_name: ev.organizer_name || '',
+      }))
+      setEvents(normalized)
+    } catch {
+      // Mantener eventos actuales si hay error
+    }
+  }
+
+  const visibleEvents = events
 
   return (
     <main className="home">
@@ -77,15 +143,18 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <div className="loading">
-            <div className="spinner"></div>
-            <p>Cargando eventos increíbles...</p>
+          <SkeletonGrid count={6} />
+        ) : events.length === 0 ? (
+          <div className="empty-state">
+            <p>🎭</p>
+            <h3>No hay eventos disponibles</h3>
+            <p>Vuelve pronto para descubrir nuevos eventos en Tunja.</p>
           </div>
         ) : (
           <div className="events-scroll-container">
             <div className="events-scroll">
-              {events.map((event, index) => {
-                const categoryColor = categoryColors[event.category?.name] || categoryColors['Cultura']
+              {visibleEvents.map((event, index) => {
+                const categoryColor = getCategoryStyle(event.category?.name)
                 return (
                   <div
                     key={event.id}
@@ -96,7 +165,11 @@ export default function Home() {
                     }}
                     onClick={() => handleEventClick(event)}
                   >
-                    <div className="event-image" style={{ background: event.image }}>
+                    <div className="event-image" style={
+                      event.image?.startsWith('linear-gradient')
+                        ? { background: event.image }
+                        : { backgroundImage: `url(${event.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+                    }>
                       <span className="category-badge-scroll" style={{ borderColor: categoryColor.border, color: categoryColor.border }}>
                         {categoryColor.label}
                       </span>
@@ -109,12 +182,28 @@ export default function Home() {
                       <div className="event-meta-scroll">
                         <div className="meta-item-scroll">
                           <span>📍</span>
-                          <span>{event.location?.name}</span>
+                          <span>{event.locationName || 'N/A'}</span>
                         </div>
                         <div className="meta-item-scroll">
                           <span>📅</span>
                           <span>{new Date(event.startDate).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })}</span>
                         </div>
+                      </div>
+
+                      <div className="event-meta-scroll">
+                        <div className="meta-item-scroll">
+                          <span>👤</span>
+                          <span>{event.organizer_name || 'Organizador'}</span>
+                        </div>
+                        <div className="meta-item-scroll">
+                          <span>🎟️</span>
+                          <span>{event.is_free ? 'Gratis' : 'Pago'}</span>
+                        </div>
+                      </div>
+
+                      <div className="event-stats-scroll">
+                        <span className="stat-attendees">👥 {event.attendee_count || 0}</span>
+                        {event.average_rating > 0 && <span className="stat-rating">⭐ {event.average_rating.toFixed(1)}</span>}
                       </div>
                       
                       <button className="event-btn-scroll">Ver detalles →</button>
@@ -128,7 +217,7 @@ export default function Home() {
       </section>
 
       {showModal && selectedEvent && (
-        <EventModal event={selectedEvent} onClose={handleCloseModal} categoryColors={categoryColors} />
+        <EventModal event={selectedEvent} onClose={handleCloseModal} categoryColors={new Proxy({}, { get: (_, key) => getCategoryStyle(key) })} currentUser={currentUser} onRefresh={handleRefresh} />
       )}
     </main>
   )

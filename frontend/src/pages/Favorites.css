@@ -1,0 +1,122 @@
+.favorites-page {
+  min-height: 80vh;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  max-width: 1100px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease;
+}
+
+.favorites-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.favorites-header p {
+  margin-top: var(--spacing-sm);
+}
+
+.empty-favorites {
+  text-align: center;
+  padding: var(--spacing-2xl);
+}
+
+.empty-favorites h2 { margin-bottom: var(--spacing-md); }
+.empty-favorites p { margin-bottom: var(--spacing-xl); }
+
+.btn-explore {
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: var(--gradient-verde);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.favorite-card {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  animation: fadeIn 0.4s ease forwards;
+  opacity: 0;
+  border: 1px solid var(--bg-tertiary);
+  transition: all var(--transition-normal);
+}
+
+.favorite-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.fav-image {
+  height: 140px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--spacing-sm);
+}
+
+.fav-badge {
+  padding: 3px 10px;
+  border: 1px solid;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  text-transform: uppercase;
+}
+
+.fav-info {
+  padding: var(--spacing-md);
+}
+
+.fav-info h3 {
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: var(--spacing-sm);
+}
+
+.fav-info h3:hover { color: var(--verde-accent); }
+
+.fav-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-md);
+}
+
+.btn-remove-fav {
+  width: 100%;
+  padding: var(--spacing-sm);
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--rojo-accent);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.btn-remove-fav:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+@media (max-width: 600px) {
+  .favorites-grid {
+    grid-template-columns: 1fr;
+  }
+}

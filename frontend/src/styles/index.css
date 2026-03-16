@@ -164,6 +164,164 @@ a:hover {
   }
 }
 
+/* ---- Toast Notifications ---- */
+.toast-container {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 280px;
+  max-width: 420px;
+}
+
+.toast-success { background: rgba(3, 143, 103, 0.9); border-color: var(--verde-esmeralda); }
+.toast-error   { background: rgba(239, 68, 68, 0.9); border-color: var(--rojo-accent); }
+.toast-info    { background: rgba(30, 58, 138, 0.9); border-color: var(--azul-accent); }
+.toast-warning { background: rgba(180, 83, 9, 0.9); border-color: var(--dorado-accent); }
+
+.toast-icon { font-size: 1.2rem; flex-shrink: 0; }
+.toast-message { flex: 1; }
+.toast-close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+  opacity: 0.7;
+  padding: 0;
+  flex-shrink: 0;
+}
+.toast-close:hover { opacity: 1; }
+
+.toast-enter {
+  animation: toastSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.toast-exit {
+  animation: toastSlideOut 0.25s ease-in forwards;
+}
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(100%) scale(0.9); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes toastSlideOut {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(100%) scale(0.9); }
+}
+
+/* ---- Skeleton Loader ---- */
+@keyframes skeleton-pulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.skeleton-card {
+  background: var(--bg-secondary);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.skeleton-image {
+  height: 180px;
+  background: var(--bg-tertiary);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-body { padding: var(--spacing-md); }
+
+.skeleton-line {
+  height: 14px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  margin-bottom: var(--spacing-sm);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+.skeleton-line.short { width: 60%; }
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  padding: 0 var(--spacing-xl);
+}
+
+/* ---- Empty State ---- */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  color: var(--text-muted);
+}
+.empty-state p:first-child {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+.empty-state h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* ---- Error Boundary ---- */
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: var(--spacing-xl);
+}
+.error-boundary-content {
+  text-align: center;
+  max-width: 480px;
+}
+.error-boundary-content h1 {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--rojo-accent);
+  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+}
+.error-boundary-content p {
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-lg);
+}
+.error-boundary-content button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: 8px;
+  border: 1px solid var(--verde-esmeralda);
+  background: transparent;
+  color: var(--verde-esmeralda);
+  font-family: 'Space Grotesk', sans-serif;
+  cursor: pointer;
+  margin: 0 var(--spacing-xs);
+  transition: var(--transition-fast);
+}
+.error-boundary-content button:hover {
+  background: var(--verde-esmeralda);
+  color: var(--bg-primary);
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);

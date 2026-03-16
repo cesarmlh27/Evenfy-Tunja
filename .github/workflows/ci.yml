@@ -9,6 +9,25 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: evenfy_db
+          POSTGRES_USER: user_api
+          POSTGRES_PASSWORD: 1234
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U user_api -d evenfy_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL: jdbc:postgresql://localhost:5432/evenfy_db
+      DB_USERNAME: user_api
+      DB_PASSWORD: 1234
     steps:
       - name: Checkout
         uses: actions/checkout@v4

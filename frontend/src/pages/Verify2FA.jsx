@@ -24,7 +24,7 @@ export function Verify2FA() {
     const result = await verify2FA(code)
 
     if (result.success) {
-      navigate('/dashboard')
+      navigate('/')
     } else {
       setError(result.error)
     }

@@ -19,7 +19,7 @@ export function Login() {
     const result = await login(email, password)
 
     if (result.success) {
-      navigate('/dashboard')
+      navigate('/')
     } else if (result.twoFactorRequired) {
       navigate('/verify-2fa')
     } else {

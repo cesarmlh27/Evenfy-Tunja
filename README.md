@@ -133,3 +133,22 @@ Guía completa de despliegue:
 │   ├── services/        # Cliente API (axios)
 │   └── styles/          # Estilos globales
 ```
+
+## Release Notes (Portfolio)
+
+### v1.0 - Stabilization & Production Readiness
+
+- Se reforzó la autenticación JWT con manejo de errores más robusto y compatibilidad con 2FA.
+- Se corrigió el flujo de perfil para permitir actualización parcial (nombre y bio) sin exigir campos de registro.
+- Se eliminó la edición de `avatarUrl` del formulario de perfil para simplificar UX y evitar errores de validación.
+- Se corrigió el control de permisos en eventos: solo el creador (o admin) puede eliminar eventos.
+- Se aplicó soft-delete consistente y el perfil ya no muestra eventos desactivados.
+- Se mejoró la redirección post-login y post-2FA para llevar al usuario directamente al inicio.
+- Se estabilizaron pipelines de GitHub Actions:
+	- CI con servicio PostgreSQL para tests de backend.
+	- CD de imágenes Docker endurecido para builds más confiables.
+
+### Estado actual
+
+- Ultimos workflows de CI y CD en verde en `main`.
+- Backend, frontend y contenedores listos para demo técnica de portafolio.

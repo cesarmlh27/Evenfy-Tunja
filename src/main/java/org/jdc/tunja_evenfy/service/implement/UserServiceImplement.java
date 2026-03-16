@@ -114,7 +114,7 @@ public class UserServiceImplement implements UserService {
                 .orElseThrow(() -> new NotFoundException("User not found: " + userId));
 
         // Eventos creados por el usuario
-        var createdEvents = eventRepository.findByOrganizerId(userId)
+        var createdEvents = eventRepository.findByOrganizerIdAndIsActiveTrue(userId)
                 .stream()
                 .map(e -> eventService.findById(e.getId()))
                 .toList();

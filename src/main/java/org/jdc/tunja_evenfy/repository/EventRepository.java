@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface EventRepository extends JpaRepository<EventEntity, UUID> {
-    List<EventEntity> findByOrganizerId(UUID organizerId);
+       List<EventEntity> findByOrganizerId(UUID organizerId);
+       List<EventEntity> findByOrganizerIdAndIsActiveTrue(UUID organizerId);
 
     List<EventEntity> findByIsActiveTrue();
 

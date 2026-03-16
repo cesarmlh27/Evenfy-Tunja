@@ -89,12 +89,21 @@ public class EventRest {
      * Solo ADMIN y ORGANIZER pueden eliminar eventos
      */
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id, HttpServletRequest request) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id, HttpServletRequest request) {
         String role = (String) request.getAttribute("role");
+        UUID userId = (UUID) request.getAttribute("userId");
         if (role == null || (!role.equals("ADMIN") && !role.equals("ORGANIZER"))) {
             throw new BadRequestException("Solo administradores y organizadores pueden eliminar eventos");
         }
+        // ORGANIZER solo puede eliminar sus propios eventos
+        if (!"ADMIN".equals(role)) {
+            EventDTO existing = eventService.findById(id);
+            if (userId == null || existing.getCreatedBy() == null || !existing.getCreatedBy().equals(userId)) {
+                throw new BadRequestException("Solo el creador del evento puede eliminarlo");
+            }
+        }
         eventService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     /**

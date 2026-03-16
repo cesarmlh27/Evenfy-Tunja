@@ -2,6 +2,7 @@ package org.jdc.tunja_evenfy.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.jdc.tunja_evenfy.config.ApiPaths;
+import jakarta.validation.Valid;
 import org.jdc.tunja_evenfy.dto.CategoryDTO;
 import org.jdc.tunja_evenfy.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,12 @@ public class CategoryRest {
     }
 
     @PostMapping
-    public CategoryDTO create(@RequestBody CategoryDTO dto) {
+    public CategoryDTO create(@Valid @RequestBody CategoryDTO dto) {
         return categoryService.create(dto);
     }
 
     @PutMapping("/{id}")
-    public CategoryDTO update(@PathVariable UUID id, @RequestBody CategoryDTO dto) {
+    public CategoryDTO update(@PathVariable UUID id, @Valid @RequestBody CategoryDTO dto) {
         return categoryService.update(id, dto);
     }
 

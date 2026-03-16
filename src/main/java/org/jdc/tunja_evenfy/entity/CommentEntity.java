@@ -36,5 +36,6 @@ public class CommentEntity {
     )
     private UserEntity user;
 
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }

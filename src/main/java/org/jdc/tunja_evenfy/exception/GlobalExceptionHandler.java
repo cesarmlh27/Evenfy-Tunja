@@ -1,6 +1,7 @@
 package org.jdc.tunja_evenfy.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -8,11 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiError> handleNotFound(NotFoundException ex, HttpServletRequest req) {
+        log.warn("Resource not found: {} - {}", req.getRequestURI(), ex.getMessage());
         ApiError body = ApiError.builder()
                 .timestamp(Instant.now())
                 .status(HttpStatus.NOT_FOUND.value())
@@ -25,6 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex, HttpServletRequest req) {
+        log.warn("Bad request: {} - {}", req.getRequestURI(), ex.getMessage());
         ApiError body = ApiError.builder()
                 .timestamp(Instant.now())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -35,13 +39,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    // Para validaciones con @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
         String msg = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
+        log.warn("Validation failed: {} - {}", req.getRequestURI(), msg);
         ApiError body = ApiError.builder()
                 .timestamp(Instant.now())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -55,6 +59,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest req) {
+        log.error("Unexpected error at {}: {}", req.getRequestURI(), ex.getMessage(), ex);
 
         ApiError body = ApiError.builder()
                 .timestamp(Instant.now())
@@ -66,6 +71,4 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
-
-
 }

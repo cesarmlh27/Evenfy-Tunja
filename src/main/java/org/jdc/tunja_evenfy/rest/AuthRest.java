@@ -3,6 +3,7 @@ package org.jdc.tunja_evenfy.rest;
 import lombok.RequiredArgsConstructor;
 import org.jdc.tunja_evenfy.config.ApiPaths;
 import org.jdc.tunja_evenfy.config.JwtUtil;
+import jakarta.validation.Valid;
 import org.jdc.tunja_evenfy.dto.*;
 import org.jdc.tunja_evenfy.exception.BadRequestException;
 import org.jdc.tunja_evenfy.service.AuthService;
@@ -23,7 +24,7 @@ public class AuthRest {
      * POST /api/v1/auth/register
      */
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody RegisterRequest request) {
+    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
@@ -32,7 +33,7 @@ public class AuthRest {
      * POST /api/v1/auth/login
      */
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
 

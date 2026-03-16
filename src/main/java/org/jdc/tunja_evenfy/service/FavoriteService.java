@@ -7,6 +7,7 @@ import java.util.UUID;
 public interface FavoriteService {
 
     List<FavoriteDTO> findAll();
+    List<FavoriteDTO> findByUserId(UUID userId);
     FavoriteDTO findById(UUID id);
     FavoriteDTO create(FavoriteDTO dto);
     void delete(UUID id);

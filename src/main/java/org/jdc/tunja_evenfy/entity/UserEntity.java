@@ -45,6 +45,12 @@
         @Column(columnDefinition = "boolean default true")
         private Boolean isActive; // Cuenta activa/desactivada
 
+        @Column(length = 500)
+        private String avatarUrl;
+
+        @Column(length = 500)
+        private String bio;
+
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private LocalDateTime lastLogin;

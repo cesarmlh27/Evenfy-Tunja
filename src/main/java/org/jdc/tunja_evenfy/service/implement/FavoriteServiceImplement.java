@@ -1,6 +1,7 @@
 package org.jdc.tunja_evenfy.service.implement;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jdc.tunja_evenfy.dto.FavoriteDTO;
 import org.jdc.tunja_evenfy.entity.EventEntity;
 import org.jdc.tunja_evenfy.entity.FavoriteEntity;
@@ -12,10 +13,12 @@ import org.jdc.tunja_evenfy.repository.FavoriteRepository;
 import org.jdc.tunja_evenfy.repository.UserRepository;
 import org.jdc.tunja_evenfy.service.FavoriteService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FavoriteServiceImplement implements FavoriteService {
@@ -33,11 +36,18 @@ public class FavoriteServiceImplement implements FavoriteService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FavoriteDTO> findAll() {
         return favoriteRepository.findAll().stream().map(this::toDTO).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<FavoriteDTO> findByUserId(UUID userId) {
+        return favoriteRepository.findByUserId(userId).stream().map(this::toDTO).toList();
+    }
+
     @Override
+    @Transactional(readOnly = true)
     public FavoriteDTO findById(UUID id) {
         FavoriteEntity f = favoriteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Favorite not found: " + id));
@@ -45,12 +55,21 @@ public class FavoriteServiceImplement implements FavoriteService {
     }
 
     @Override
+    @Transactional
     public FavoriteDTO create(FavoriteDTO dto) {
         if (dto == null || dto.getUserId() == null) {
             throw new BadRequestException("userId is required");
         }
         if (dto.getEventId() == null) {
             throw new BadRequestException("eventId is required");
+        }
+
+        // Toggle: si ya existe, eliminar; si no, crear
+        var existing = favoriteRepository.findByUserIdAndEventId(dto.getUserId(), dto.getEventId());
+        if (existing.isPresent()) {
+            favoriteRepository.delete(existing.get());
+            log.info("Favorito removido: usuario {} evento {}", dto.getUserId(), dto.getEventId());
+            return null;
         }
 
         UserEntity user = userRepository.findById(dto.getUserId())
@@ -64,10 +83,12 @@ public class FavoriteServiceImplement implements FavoriteService {
                 .user(user)
                 .build();
 
+        log.info("Favorito agregado: usuario {} evento {}", dto.getUserId(), dto.getEventId());
         return toDTO(favoriteRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void delete(UUID id) {
         FavoriteEntity f = favoriteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Favorite not found: " + id));

@@ -33,5 +33,6 @@ public class FavoriteEntity {
     )
     private EventEntity event;
 
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }

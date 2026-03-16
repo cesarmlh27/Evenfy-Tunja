@@ -3,6 +3,7 @@ package org.jdc.tunja_evenfy.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.jdc.tunja_evenfy.config.ApiPaths;
+import jakarta.validation.Valid;
 import org.jdc.tunja_evenfy.dto.LocationDTO;
 import org.jdc.tunja_evenfy.service.LocationService;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,12 @@ public class LocationRest {
     }
 
     @PostMapping
-    public LocationDTO create(@RequestBody LocationDTO dto) {
+    public LocationDTO create(@Valid @RequestBody LocationDTO dto) {
         return locationService.create(dto);
     }
 
     @PutMapping("/{id}")
-    public LocationDTO update(@PathVariable UUID id, @RequestBody LocationDTO dto) {
+    public LocationDTO update(@PathVariable UUID id, @Valid @RequestBody LocationDTO dto) {
         return locationService.update(id, dto);
     }
 

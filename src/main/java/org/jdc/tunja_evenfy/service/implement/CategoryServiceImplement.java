@@ -1,6 +1,7 @@
 package org.jdc.tunja_evenfy.service.implement;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jdc.tunja_evenfy.dto.CategoryDTO;
 import org.jdc.tunja_evenfy.entity.CategoryEntity;
 import org.jdc.tunja_evenfy.exception.BadRequestException;
@@ -8,10 +9,12 @@ import org.jdc.tunja_evenfy.exception.NotFoundException;
 import org.jdc.tunja_evenfy.repository.CategoryRepository;
 import org.jdc.tunja_evenfy.service.CategoryService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImplement implements CategoryService {

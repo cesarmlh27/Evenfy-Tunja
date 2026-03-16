@@ -1,6 +1,7 @@
 package org.jdc.tunja_evenfy.service.implement;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jdc.tunja_evenfy.dto.LocationDTO;
 import org.jdc.tunja_evenfy.entity.LocationEntity;
 import org.jdc.tunja_evenfy.exception.BadRequestException;
@@ -8,10 +9,12 @@ import org.jdc.tunja_evenfy.exception.NotFoundException;
 import org.jdc.tunja_evenfy.repository.LocationRepository;
 import org.jdc.tunja_evenfy.service.LocationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImplement implements LocationService {

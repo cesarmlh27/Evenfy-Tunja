@@ -44,22 +44,6 @@ frontend/dist/
 # Local environment files
 .env
 frontend/.env
-.env.*
-
-# Local AI/editor assistant folders
-.agents/
-.claude/
-.cursor/
-.windsurf/
-.roo/
-.aider/
 
 # Upload artifacts
 uploads/
-
-# Local caches and reports
-coverage/
-.cache/
-npm-debug.log*
-yarn-error.log*
-pnpm-debug.log*
